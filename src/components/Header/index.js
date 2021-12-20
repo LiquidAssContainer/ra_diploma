@@ -1,6 +1,6 @@
 import { NavLink, Link, HashRouter as Router } from 'react-router-dom';
 import { NavBarControls } from './NavBarControls';
-import logo from '../../img/header-logo.png';
+import logo from '../../assets/header-logo.png';
 
 export const Header = () => {
   return (
@@ -15,9 +15,9 @@ export const Header = () => {
               <div className="collapase navbar-collapse" id="navbarMain">
                 <ul className="navbar-nav mr-auto">
                   <NavItem exact to="/" label="Главная" />
-                  <NavItem to="/catalog" label="Каталог" />
-                  <NavItem to="/about" label="О магазине" />
-                  <NavItem to="/contacts" label="Контакты" />
+                  <NavItem exact to="/catalog" label="Каталог" />
+                  <NavItem exact to="/about" label="О магазине" />
+                  <NavItem exact to="/contacts" label="Контакты" />
                 </ul>
                 <NavBarControls />
               </div>

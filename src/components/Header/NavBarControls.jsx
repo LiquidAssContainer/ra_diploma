@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import cn from 'classnames';
+import { useHistory } from 'react-router-dom';
 
 export const NavBarControls = () => {
+  const history = useHistory();
+
   const [isFormInvisible, setIsFormInvisible] = useState(true);
 
   const onSearchExpand = () => {
     setIsFormInvisible(!isFormInvisible);
+  };
+
+  const onCartClick = () => {
+    history.push('/cart');
   };
 
   return (
@@ -17,7 +24,10 @@ export const NavBarControls = () => {
           onClick={onSearchExpand}
         ></div>
 
-        <div className="header-controls-pic header-controls-cart">
+        <div
+          className="header-controls-pic header-controls-cart"
+          onClick={onCartClick}
+        >
           <div className="header-controls-cart-full">1</div>
           <div className="header-controls-cart-menu"></div>
         </div>
