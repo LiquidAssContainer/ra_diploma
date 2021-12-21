@@ -9,6 +9,7 @@ import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Homepage } from './components/Homepage';
 import { NotFound } from './components/NotFound';
+import { ProductPage } from './components/ProductPage';
 
 export const App = () => {
   return (
@@ -20,6 +21,7 @@ export const App = () => {
             <Banner />
             <Router>
               <Switch>
+                <Route path="/catalog/:id" component={ProductPage} />
                 <Route path="/catalog" component={Catalog} />
                 <Route path="/about" component={About} />
                 <Route path="/contacts" component={Contacts} />

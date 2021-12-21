@@ -1,3 +1,5 @@
+import { Link, HashRouter as Router } from 'react-router-dom';
+
 export const ProductList = ({ products, length }) => {
   return (
     <div className="row">
@@ -20,9 +22,11 @@ const ProductItem = ({ id, category, title, price, images }) => {
         <div className="card-body">
           <p className="card-text">{title}</p>
           <p className="card-text">{price} руб.</p>
-          <a href="/products/1.html" className="btn btn-outline-primary">
-            Заказать
-          </a>
+          <Router>
+            <Link to={`catalog/${id}`} className="btn btn-outline-primary">
+              Заказать
+            </Link>
+          </Router>
         </div>
       </div>
     </div>

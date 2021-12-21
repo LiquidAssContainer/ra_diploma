@@ -1,13 +1,17 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getTopSalesAsync } from '../../reducers/topSales';
+
 import { Catalog } from '../Catalog';
+import { Preloader } from '../Preloader';
 import { ProductList } from '../ProductList';
+import { TopSales } from '../TopSales';
 
 export const Homepage = () => {
   return (
     <>
-      <section className="top-sales">
-        <h2 className="text-center">Хиты продаж!</h2>
-        <ProductList products={[]} />
-      </section>
+      <TopSales />
       <Catalog />
     </>
   );

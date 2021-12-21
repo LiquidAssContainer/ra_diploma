@@ -10,7 +10,7 @@ export const Header = () => {
           <div className="col">
             <nav className="navbar navbar-expand-sm navbar-light bg-light">
               <Link to="/" className="navbar-brand">
-                <img src={logo} alt="Bosa Noga" />
+                <img src={logo} alt="Bosa Noga" height={59} />
               </Link>
               <div className="collapase navbar-collapse" id="navbarMain">
                 <ul className="navbar-nav mr-auto">
