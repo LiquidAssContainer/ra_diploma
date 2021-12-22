@@ -1,11 +1,13 @@
-import cn from 'classnames';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit';
+import cn from 'classnames';
 
 import {
   decreaseQuantity,
   getProductInfoAsync,
   increaseQuantity,
+  resetSelected,
   selectSize,
 } from '../../reducers/productPage';
 
@@ -25,6 +27,8 @@ export const ProductPage = ({
 
   useEffect(() => {
     dispatch(getProductInfoAsync(id));
+
+    return () => dispatch(resetSelected());
   }, []);
 
   return loading ? (
@@ -58,13 +62,13 @@ const ProductSizes = ({ sizes }) => {
     <p>
       Размеры в наличии:{' '}
       {sizes.map((props) => (
-        <ProductSize {...props} />
+        <ProductSize {...props} key={nanoid()} />
       ))}
     </p>
   );
 };
 
-const ProductSize = ({ size, avalible }) => {
+const ProductSize = ({ size, avalible: available }) => {
   const dispatch = useDispatch();
   const { selectedSize } = useSelector((state) => state.productPage);
 
@@ -76,7 +80,7 @@ const ProductSize = ({ size, avalible }) => {
     <span
       className={cn('catalog-item-size', {
         selected: selectedSize === size,
-        unavailable: !avalible,
+        unavailable: !available,
       })}
       onClick={onClick}
     >
@@ -110,7 +114,7 @@ const ProductFeaturesTable = ({ ...features }) => {
     ['material', 'Материалы'],
     ['season', 'Сезон'],
     ['reason', 'Повод'],
-    ['heelSize', 'Высота каблука'],
+    ['heelSize', 'Высота каблука/подошвы'],
   ];
 
   return (

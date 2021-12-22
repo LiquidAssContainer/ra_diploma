@@ -1,4 +1,9 @@
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 
 import { About } from './components/About';
 import { Banner } from './components/Banner';
@@ -21,8 +26,11 @@ export const App = () => {
             <Banner />
             <Router>
               <Switch>
-                <Route path="/catalog/:id" component={ProductPage} />
-                <Route path="/catalog" component={Catalog} />
+                <Route path="/products/:id" component={ProductPage} />
+                {/* <Route path="/catalog/0">
+                  <Redirect to="/catalog" />
+                </Route> */}
+                <Route path="/catalog/:id?" component={Catalog} />
                 <Route path="/about" component={About} />
                 <Route path="/contacts" component={Contacts} />
                 <Route path="/cart" component={Cart} />

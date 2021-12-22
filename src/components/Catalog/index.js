@@ -2,65 +2,59 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, HashRouter as Router } from 'react-router-dom';
 
-import { getCatalogAsync, getCategoriesAsync } from '../../reducers/catalog';
+import {
+  changeActiveCategory,
+  getProductsAsync,
+  getCategoriesAsync,
+  clearProducts,
+} from '../../reducers/catalog';
 
 import { ProductList } from '../ProductList';
 import { Preloader } from '../Preloader';
 import classNames from 'classnames';
+import { CatalogCategories } from './CatalogCategories';
 
-export const Catalog = () => {
+export const Catalog = ({ match }) => {
   const dispatch = useDispatch();
-  const { products, categories, activeCategory, loading, error } = useSelector(
-    (state) => state.catalog,
-  );
+  const {
+    products,
+    categories,
+    activeCategory,
+    areCategoriesLoaded,
+    loading,
+    error,
+    noMoreProducts,
+  } = useSelector((state) => state.catalog);
+  // const [areCategoriesLoaded, setCategoriesLoaded] = useState(false)
 
   const onLoadMore = () => {
-    dispatch(getCatalogAsync({ category: activeCategory }));
+    dispatch(getProductsAsync());
   };
 
-  useEffect(() => {
-    dispatch(getCategoriesAsync());
-    dispatch(getCatalogAsync());
-  }, []);
+  useEffect(async () => {
+    if (activeCategory !== null) {
+      dispatch(clearProducts());
+      dispatch(getProductsAsync());
+    }
+  }, [activeCategory]);
 
   return (
-    <section className="catalog">
-      <h2 className="text-center">Каталог</h2>
-      <ul className="catalog-categories nav justify-content-center">
-        <Router>
-          {categories.map(({ title, id }) => (
-            <CatalogNavItem exact to={`/catalog/${id}`} label={title} key={id} />
-          ))}
-          {/* <CatalogNavItem exact to="/" label="Все" />
-          <CatalogNavItem exact to="/" label="Женская обувь" />
-          <CatalogNavItem exact to="/" label="Мужская обувь" />
-          <CatalogNavItem exact to="/" label="Обувь унисекс" />
-          <CatalogNavItem exact to="/" label="Детская обувь" /> */}
-        </Router>
-      </ul>
+    <Router>
+      <section className="catalog">
+        <h2 className="text-center">Каталог</h2>
 
-      {loading ? <Preloader /> : <ProductList products={products} />}
+        <CatalogCategories id={match?.params.id} />
 
-      <div className="text-center">
-        <button className="btn btn-outline-primary" onClick={onLoadMore}>
-          Загрузить ещё
-        </button>
-      </div>
-    </section>
-  );
-};
+        {loading ? <Preloader /> : <ProductList products={products} />}
 
-const CatalogNavItem = ({ label, ...props }) => {
-  return (
-    <li className="nav-item">
-      <NavLink
-        {...props}
-        activeClassName="active"
-        className="nav-link catalog-nav-link"
-        // className={classNames('nav-link', 'catalog-nav-link', { active: activeCategory !== 0})}
-      >
-        {label}
-      </NavLink>
-    </li>
+        {noMoreProducts || (
+          <div className="text-center">
+            <button className="btn btn-outline-primary" onClick={onLoadMore}>
+              Загрузить ещё
+            </button>
+          </div>
+        )}
+      </section>
+    </Router>
   );
 };

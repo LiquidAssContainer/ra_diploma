@@ -4,7 +4,9 @@ import { getResponse } from '../lib/getResponse';
 const initialState = {
   products: [],
   categories: [],
-  activeCategory: 0,
+  activeCategory: null,
+  areCategoriesLoaded: false,
+  noMoreProducts: false,
   loading: false,
   error: null,
   showMoreLoading: false,
@@ -24,13 +26,28 @@ export const getCategoriesAsync = createAsyncThunk(
   },
 );
 
-export const getCatalogAsync = createAsyncThunk(
+export const getProductsAsync = createAsyncThunk(
   'catalog/fetchCatalog',
-  async ({ category }, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
+    const {
+      catalog: { activeCategory, products },
+    } = getState();
+
+    const query = new URLSearchParams();
+    if (activeCategory) {
+      query.append('categoryId', activeCategory);
+    }
+    if (products.length) {
+      query.append('offset', products.length);
+    }
+    const queryString = query.toString();
+
+    // console.log(catalog);
     try {
-      // const query = category ? 
       const data = await getResponse({
-        url: process.env.REACT_APP_ITEMS,
+        url: `${process.env.REACT_APP_ITEMS}${
+          queryString && `?${queryString}`
+        }`,
       });
       return data;
     } catch (e) {
@@ -46,6 +63,10 @@ export const catalogSlice = createSlice({
     changeActiveCategory: (state, { payload }) => {
       state.activeCategory = payload;
     },
+    clearProducts: (state) => {
+      state.products = [];
+      state.noMoreProducts = false
+    },
     getNextProducts: (state, { payload }) => {
       state.products = state.products.concat(payload);
     },
@@ -53,24 +74,28 @@ export const catalogSlice = createSlice({
   extraReducers: {
     [getCategoriesAsync.fulfilled]: (state, { payload }) => {
       state.categories = [{ id: 0, title: 'Все' }].concat(payload);
+      state.areCategoriesLoaded = true;
     },
-    [getCatalogAsync.pending]: (state) => {
+    [getProductsAsync.pending]: (state) => {
       state.loading = true;
       state.error = null;
     },
-    [getCatalogAsync.fulfilled]: (state, { payload }) => {
-      state.products = payload;
+    [getProductsAsync.fulfilled]: (state, { payload }) => {
+      // state.products = payload;
+      state.products = state.products.concat(payload);
+      if (payload.length < 6) {
+        state.noMoreProducts = true
+      }
       state.loading = false;
       state.error = null;
     },
-    [getCatalogAsync.rejected]: (state, { payload }) => {
+    [getProductsAsync.rejected]: (state, { payload }) => {
       state.error = payload;
       state.loading = false;
     },
   },
 });
 
-// export const { addService, removeService, editService } =
-//   topSalesSlice.actions;
+export const { changeActiveCategory, getNextProducts, clearProducts } = catalogSlice.actions;
 
 export const catalogReducer = catalogSlice.reducer;

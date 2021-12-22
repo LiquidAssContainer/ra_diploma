@@ -41,6 +41,10 @@ export const productPageSlice = createSlice({
     selectSize: (state, { payload }) => {
       state.selectedSize = payload;
     },
+    resetSelected: (state) => {
+      state.selectedSize = null;
+      state.quantity = 1;
+    },
   },
   extraReducers: {
     [getProductInfoAsync.pending]: (state) => {
@@ -59,7 +63,7 @@ export const productPageSlice = createSlice({
   },
 });
 
-export const { decreaseQuantity, increaseQuantity, selectSize } =
+export const { decreaseQuantity, increaseQuantity, selectSize, resetSelected } =
   productPageSlice.actions;
 
 export const productPageReducer = productPageSlice.reducer;
