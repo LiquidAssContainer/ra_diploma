@@ -26,11 +26,8 @@ export const App = () => {
             <Banner />
             <Router>
               <Switch>
-                <Route path="/products/:id" component={ProductPage} />
-                {/* <Route path="/catalog/0">
-                  <Redirect to="/catalog" />
-                </Route> */}
-                <Route path="/catalog/:id?" component={Catalog} />
+                <Route path="/catalog/:id" component={ProductPage} />
+                <Route path="/catalog" component={Catalog} />
                 <Route path="/about" component={About} />
                 <Route path="/contacts" component={Contacts} />
                 <Route path="/cart" component={Cart} />

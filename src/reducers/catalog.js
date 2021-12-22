@@ -4,8 +4,7 @@ import { getResponse } from '../lib/getResponse';
 const initialState = {
   products: [],
   categories: [],
-  activeCategory: null,
-  areCategoriesLoaded: false,
+  activeCategory: 0,
   noMoreProducts: false,
   loading: false,
   error: null,

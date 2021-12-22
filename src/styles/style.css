@@ -292,7 +292,7 @@ section {
 }
 
 /* Bootstrap */
-.nav-link.catalog-nav-link.active {
+.catalog-nav-item.active {
   color: #ff0000;
 }
 

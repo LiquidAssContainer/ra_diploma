@@ -23,7 +23,7 @@ const ProductItem = ({ id, category, title, price, images }) => {
           <p className="card-text">{title}</p>
           <p className="card-text">{price} руб.</p>
           <Router>
-            <Link to={`products/${id}`} className="btn btn-outline-primary">
+            <Link to={`/catalog/${id}`} className="btn btn-outline-primary">
               Заказать
             </Link>
           </Router>
