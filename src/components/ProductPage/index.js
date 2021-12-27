@@ -12,6 +12,7 @@ import {
 } from '../../reducers/productPage';
 
 import { Preloader } from '../Preloader';
+import { addToCart } from '../../reducers/cart';
 
 export const ProductPage = ({
   match: {
@@ -24,6 +25,12 @@ export const ProductPage = ({
   );
 
   const { price, sizes, id: _, category, images, title, ...features } = product;
+
+  const onBuyClick = () => {
+    if (selectedSize) {
+      dispatch(addToCart({ quantity, size: selectedSize, ...product }));
+    }
+  };
 
   useEffect(() => {
     dispatch(getProductInfoAsync(id));
@@ -50,7 +57,13 @@ export const ProductPage = ({
               onIncrease={() => dispatch(increaseQuantity())}
             />
           </div>
-          <button className="btn btn-danger btn-block btn-lg">В корзину</button>
+          <button
+            // disabled={selectedSize !== null}
+            className="btn btn-danger btn-block btn-lg"
+            onClick={onBuyClick}
+          >
+            В корзину
+          </button>
         </div>
       </div>
     </section>

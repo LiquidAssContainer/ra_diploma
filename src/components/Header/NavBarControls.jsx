@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import cn from 'classnames';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export const NavBarControls = () => {
   const history = useHistory();
+  const { cart } = useSelector((state) => state.cart);
+
+  const totalQuantity = cart.reduce(
+    (acc, product) => acc + product.quantity,
+    0,
+  );
 
   const [isFormInvisible, setIsFormInvisible] = useState(true);
 
@@ -28,7 +35,9 @@ export const NavBarControls = () => {
           className="header-controls-pic header-controls-cart"
           onClick={onCartClick}
         >
-          <div className="header-controls-cart-full">1</div>
+          {totalQuantity > 0 && (
+            <div className="header-controls-cart-full">{totalQuantity}</div>
+          )}
           <div className="header-controls-cart-menu"></div>
         </div>
       </div>
