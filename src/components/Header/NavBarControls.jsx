@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import cn from 'classnames';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import cn from 'classnames';
 
 export const NavBarControls = () => {
-  const history = useHistory();
   const { cart } = useSelector((state) => state.cart);
 
   const totalQuantity = cart.reduce(
@@ -18,10 +17,6 @@ export const NavBarControls = () => {
     setIsFormInvisible(!isFormInvisible);
   };
 
-  const onCartClick = () => {
-    history.push('/cart');
-  };
-
   return (
     <div>
       <div className="header-controls-pics">
@@ -31,15 +26,14 @@ export const NavBarControls = () => {
           onClick={onSearchExpand}
         ></div>
 
-        <div
-          className="header-controls-pic header-controls-cart"
-          onClick={onCartClick}
-        >
-          {totalQuantity > 0 && (
-            <div className="header-controls-cart-full">{totalQuantity}</div>
-          )}
-          <div className="header-controls-cart-menu"></div>
-        </div>
+        <Link to="/cart">
+          <div className="header-controls-pic header-controls-cart">
+            {totalQuantity > 0 && (
+              <div className="header-controls-cart-full">{totalQuantity}</div>
+            )}
+            <div className="header-controls-cart-menu"></div>
+          </div>
+        </Link>
       </div>
 
       <SearchForm isInvisible={isFormInvisible} />

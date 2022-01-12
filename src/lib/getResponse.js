@@ -6,5 +6,7 @@ export async function getResponse({ url, method, data }) {
   if (!response.ok) {
     throw new Error(response.statusText);
   }
-  return await response.json();
+  if (response.status !== 204) {
+    return await response.json();
+  }
 }
