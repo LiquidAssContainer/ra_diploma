@@ -36,7 +36,9 @@ export const productPageSlice = createSlice({
       }
     },
     increaseQuantity: (state) => {
-      state.quantity = state.quantity + 1;
+      if (state.quantity < 10) {
+        state.quantity = state.quantity + 1;
+      }
     },
     selectSize: (state, { payload }) => {
       state.selectedSize = payload;

@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import cn from 'classnames';
 
 import {
   changeActiveCategory,
   getCategoriesAsync,
 } from '../../reducers/catalog';
-
-import classNames from 'classnames';
 
 export const CatalogCategories = () => {
   const dispatch = useDispatch();
@@ -35,7 +34,7 @@ const CatalogNavItem = ({ label, category }) => {
 
   return (
     <li
-      className={classNames('nav-item', 'catalog-nav-item', {
+      className={cn('nav-item', 'catalog-nav-item', {
         active: activeCategory === category,
       })}
     >

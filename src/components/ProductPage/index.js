@@ -1,18 +1,17 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
-import cn from 'classnames';
 
+import { addToCart } from '../../reducers/cart';
 import {
   decreaseQuantity,
   getProductInfoAsync,
   increaseQuantity,
   resetSelected,
-  selectSize,
 } from '../../reducers/productPage';
 
 import { Preloader } from '../Preloader';
-import { addToCart } from '../../reducers/cart';
+import { ProductSizes } from './ProductSizes';
+import { NotFound } from '../NotFound';
 
 export const ProductPage = ({
   match: {
@@ -25,6 +24,8 @@ export const ProductPage = ({
   );
 
   const { price, sizes, id: _, category, images, title, ...features } = product;
+
+  const availableSizes = sizes.filter(({ avalible: available }) => available);
 
   const onBuyClick = () => {
     if (selectedSize) {
@@ -40,6 +41,8 @@ export const ProductPage = ({
 
   return loading ? (
     <Preloader />
+  ) : error ? (
+    <NotFound />
   ) : (
     <section className="catalog-item">
       <h2 className="text-center">{title}</h2>
@@ -50,55 +53,27 @@ export const ProductPage = ({
         <div className="col-7">
           <ProductFeaturesTable {...features} />
           <div className="text-center">
-            <ProductSizes sizes={sizes} />
-            <ProductQuantity
-              quantity={quantity}
-              onDecrease={() => dispatch(decreaseQuantity())}
-              onIncrease={() => dispatch(increaseQuantity())}
-            />
+            <ProductSizes sizes={availableSizes} />
+            {!!availableSizes.length && (
+              <ProductQuantity
+                quantity={quantity}
+                onDecrease={() => dispatch(decreaseQuantity())}
+                onIncrease={() => dispatch(increaseQuantity())}
+              />
+            )}
           </div>
-          <button
-            // disabled={selectedSize !== null}
-            className="btn btn-danger btn-block btn-lg"
-            onClick={onBuyClick}
-          >
-            В корзину
-          </button>
+          {!!availableSizes.length && (
+            <button
+              disabled={selectedSize === null}
+              className="btn btn-danger btn-block btn-lg"
+              onClick={onBuyClick}
+            >
+              В корзину
+            </button>
+          )}
         </div>
       </div>
     </section>
-  );
-};
-
-const ProductSizes = ({ sizes }) => {
-  return (
-    <p>
-      Размеры в наличии:{' '}
-      {sizes.map((props) => (
-        <ProductSize {...props} key={nanoid()} />
-      ))}
-    </p>
-  );
-};
-
-const ProductSize = ({ size, avalible: available }) => {
-  const dispatch = useDispatch();
-  const { selectedSize } = useSelector((state) => state.productPage);
-
-  const onClick = () => {
-    dispatch(selectSize(size));
-  };
-
-  return (
-    <span
-      className={cn('catalog-item-size', {
-        selected: selectedSize === size,
-        unavailable: !available,
-      })}
-      onClick={onClick}
-    >
-      {size}
-    </span>
   );
 };
 

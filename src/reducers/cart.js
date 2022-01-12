@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { getResponse } from '../lib/getResponse';
-import { storage } from '../lib/localStorage';
+import { storage } from '../lib/storage';
 
 const cartStorage = storage('cart');
 const cartLocalData = cartStorage.get();
