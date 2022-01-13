@@ -60,7 +60,6 @@ export const getProductsAsync = createAsyncThunk(
     }
     const queryString = query.toString();
 
-    // console.log(catalog);
     try {
       const data = await getResponse({
         url: `${process.env.REACT_APP_ITEMS}${
@@ -85,6 +84,7 @@ export const catalogSlice = createSlice({
       state.searchString = payload;
     },
     clearProducts: (state) => {
+      console.log('CLEAR')
       state.products = [];
       state.noMoreProducts = false;
     },

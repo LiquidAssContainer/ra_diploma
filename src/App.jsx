@@ -1,10 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  HashRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { About } from './components/About';
 import { Banner } from './components/Banner';
@@ -14,9 +9,9 @@ import { Catalog } from './components/Catalog';
 import { Contacts } from './components/Contacts';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
-import { Homepage } from './components/Homepage';
 import { NotFound } from './components/NotFound';
 import { ProductPage } from './components/ProductPage';
+import { TopSales } from './components/TopSales';
 
 export const App = () => {
   const { isPopupShown, text, isError } = useSelector((state) => state.popup);
@@ -34,7 +29,10 @@ export const App = () => {
                 <Route path="/about" component={About} />
                 <Route path="/contacts" component={Contacts} />
                 <Route path="/cart" component={Cart} />
-                <Route exact path="/" component={Homepage} />
+                <Route exact path="/">
+                  <TopSales />
+                  <Catalog />
+                </Route>
                 <Route component={NotFound} />
               </Switch>
             </Router>

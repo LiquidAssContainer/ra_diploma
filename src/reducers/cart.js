@@ -56,7 +56,6 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, { payload }) => {
-      console.log(payload);
       const { id, size, quantity, price, title } = payload;
       const sameProductIndex = state.cart.findIndex(
         (product) => product.id === id && product.size === size,

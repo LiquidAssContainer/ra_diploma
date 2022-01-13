@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 
-import { changeSearchString, getProductsAsync } from '../../reducers/catalog';
-import { useLocation } from 'react-router-dom';
+import {
+  changeActiveCategory,
+  changeSearchString,
+  getProductsAsync,
+} from '../../reducers/catalog';
 
 export const NavBarControls = () => {
   const dispatch = useDispatch();
@@ -32,6 +35,7 @@ export const NavBarControls = () => {
   const onSubmit = (e) => {
     e?.preventDefault();
     dispatch(changeSearchString(search));
+    dispatch(changeActiveCategory(0));
     setSearch('');
     if (location.pathname === '/catalog') {
       dispatch(getProductsAsync());

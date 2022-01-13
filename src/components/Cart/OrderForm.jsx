@@ -3,14 +3,16 @@ import { changeFieldValue, sendOrderAsync } from '../../reducers/cart';
 
 export const OrderForm = () => {
   const {
+    cart,
     owner: { phone, address },
   } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   const onSubmit = (e) => {
-    console.log(e);
-    console.log('субмит');
-    dispatch(sendOrderAsync());
+    e.preventDefault();
+    if (cart.length) {
+      dispatch(sendOrderAsync());
+    }
   };
 
   return (

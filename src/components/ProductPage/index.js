@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { addToCart } from '../../reducers/cart';
 import {
@@ -12,12 +13,17 @@ import {
 import { Preloader } from '../Preloader';
 import { ProductSizes } from './ProductSizes';
 import { NotFound } from '../NotFound';
+import { ProductFeaturesTable } from './ProductFeaturesTable';
+
+import placeholder from '../../assets/shoe-placeholder.png';
+import { useGetImage } from '../../hooks/useGetImage';
 
 export const ProductPage = ({
   match: {
     params: { id },
   },
 }) => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const { product, quantity, selectedSize, loading, error } = useSelector(
     (state) => state.productPage,
@@ -25,11 +31,13 @@ export const ProductPage = ({
 
   const { price, sizes, id: _, category, images, title, ...features } = product;
 
+  const image = useGetImage(images, placeholder);
   const availableSizes = sizes.filter(({ avalible: available }) => available);
 
   const onBuyClick = () => {
     if (selectedSize) {
       dispatch(addToCart({ quantity, size: selectedSize, ...product }));
+      history.push('/cart');
     }
   };
 
@@ -48,7 +56,7 @@ export const ProductPage = ({
       <h2 className="text-center">{title}</h2>
       <div className="row">
         <div className="col-5">
-          <img src={images?.[0]} className="img-fluid" alt="ОООБУВЬ" />
+          <img src={image} className="img-fluid" alt="ОООБУВЬ" />
         </div>
         <div className="col-7">
           <ProductFeaturesTable {...features} />
@@ -91,36 +99,5 @@ const ProductQuantity = ({ onDecrease, onIncrease, quantity }) => {
         </button>
       </span>
     </p>
-  );
-};
-
-const ProductFeaturesTable = ({ ...features }) => {
-  const productFeatures = [
-    ['sku', 'Артикул'],
-    ['manufacturer', 'Производитель'],
-    ['color', 'Цвет'],
-    ['material', 'Материалы'],
-    ['season', 'Сезон'],
-    ['reason', 'Повод'],
-    ['heelSize', 'Высота каблука/подошвы'],
-  ];
-
-  return (
-    <table className="table table-bordered">
-      <tbody>
-        {productFeatures.reduce((acc, feature) => {
-          const [propName, title] = feature;
-          if (features[propName]) {
-            acc.push(
-              <tr key={propName}>
-                <td>{title}</td>
-                <td>{features[propName]}</td>
-              </tr>,
-            );
-          }
-          return acc;
-        }, [])}
-      </tbody>
-    </table>
   );
 };

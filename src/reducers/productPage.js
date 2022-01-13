@@ -41,7 +41,11 @@ export const productPageSlice = createSlice({
       }
     },
     selectSize: (state, { payload }) => {
-      state.selectedSize = payload;
+      if (payload === state.selectedSize) {
+        state.selectedSize = null;
+      } else {
+        state.selectedSize = payload;
+      }
     },
     resetSelected: (state) => {
       state.selectedSize = null;

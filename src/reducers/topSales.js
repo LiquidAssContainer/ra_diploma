@@ -24,12 +24,6 @@ export const getTopSalesAsync = createAsyncThunk(
 export const topSalesSlice = createSlice({
   name: 'topSales',
   initialState,
-  // reducers: {
-  //   reloadTopSales: (state, { payload }) => {
-  //     const { id, name, price, content } = payload;
-  //     const newService = { id, name, price: Number(price), content };
-  //     state.services.push(newService);
-  //   },
   extraReducers: {
     [getTopSalesAsync.pending]: (state) => {
       state.loading = true;
@@ -46,8 +40,5 @@ export const topSalesSlice = createSlice({
     },
   },
 });
-
-// export const { addService, removeService, editService } =
-//   topSalesSlice.actions;
 
 export const topSalesReducer = topSalesSlice.reducer;

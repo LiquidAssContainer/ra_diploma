@@ -1,6 +1,9 @@
 import { Link, HashRouter as Router } from 'react-router-dom';
 
-export const ProductList = ({ products, length }) => {
+import { useGetImage } from '../../hooks/useGetImage';
+import placeholder from '../../assets/shoe-placeholder.png';
+
+export const ProductList = ({ products }) => {
   return (
     <div className="row">
       {products.map((product) => (
@@ -10,13 +13,15 @@ export const ProductList = ({ products, length }) => {
   );
 };
 
-const ProductItem = ({ id, category, title, price, images }) => {
+const ProductItem = ({ id, title, price, images }) => {
+  const image = useGetImage(images, placeholder);
+
   return (
     <div className="col-4">
       <div className="card catalog-item-card">
         <div className="card-img-container">
           <img
-            src={images[0]}
+            src={image}
             className="card-img-top img-fluid"
             alt="Босоножки 'MYER'"
           />

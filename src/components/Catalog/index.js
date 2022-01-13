@@ -4,7 +4,6 @@ import { HashRouter as Router } from 'react-router-dom';
 
 import {
   getProductsAsync,
-  clearProducts,
   changeSearchString,
   getMoreProductsAsync,
 } from '../../reducers/catalog';
@@ -20,7 +19,6 @@ export const Catalog = () => {
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
-    // dispatch(clearProducts());
     dispatch(getProductsAsync());
   };
 
@@ -33,7 +31,6 @@ export const Catalog = () => {
   };
 
   useEffect(async () => {
-    // dispatch(clearProducts());
     dispatch(getProductsAsync());
   }, [activeCategory]);
 
@@ -42,7 +39,10 @@ export const Catalog = () => {
       <section className="catalog">
         <h2 className="text-center">Каталог</h2>
 
-        <form className="catalog-search-form form-inline" onSubmit={onSearchSubmit}>
+        <form
+          className="catalog-search-form form-inline"
+          onSubmit={onSearchSubmit}
+        >
           <input
             className="form-control"
             placeholder="Поиск"

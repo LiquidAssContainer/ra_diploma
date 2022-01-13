@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { removeFromCart } from '../../reducers/cart';
+
 import { Preloader } from '../Preloader';
 import { OrderForm } from './OrderForm';
 
@@ -17,7 +18,6 @@ const colTitles = [
 
 export const Cart = () => {
   const { cart, loading } = useSelector((state) => state.cart);
-  console.log(cart);
   const totalSum = cart.reduce((acc, product) => acc + product.sum, 0);
 
   return loading ? (
