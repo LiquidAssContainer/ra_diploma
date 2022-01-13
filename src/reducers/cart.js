@@ -17,6 +17,7 @@ const initialState = {
     phone: '',
     address: '',
   },
+  isModalOpen: false,
   loading: false,
   error: null,
 };

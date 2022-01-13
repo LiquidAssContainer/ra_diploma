@@ -1,9 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 
+import { changeSearchString, getProductsAsync } from '../../reducers/catalog';
+
 export const NavBarControls = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
   const { cart } = useSelector((state) => state.cart);
 
   const totalQuantity = cart.reduce(
@@ -12,9 +17,26 @@ export const NavBarControls = () => {
   );
 
   const [isFormInvisible, setIsFormInvisible] = useState(true);
+  const [search, setSearch] = useState('');
 
-  const onSearchExpand = () => {
-    setIsFormInvisible(!isFormInvisible);
+  const onSearchClick = () => {
+    if (search) {
+      onSubmit();
+    } else {
+      setIsFormInvisible(!isFormInvisible);
+    }
+  };
+
+  const onSubmit = (e) => {
+    e?.preventDefault();
+    dispatch(changeSearchString(search));
+    dispatch(getProductsAsync());
+    setSearch('');
+    history.push('/catalog');
+  };
+
+  const onInput = (value) => {
+    setSearch(value);
   };
 
   return (
@@ -23,7 +45,7 @@ export const NavBarControls = () => {
         <div
           data-id="search-expander"
           className="header-controls-pic header-controls-search"
-          onClick={onSearchExpand}
+          onClick={onSearchClick}
         ></div>
 
         <Link to="/cart">
@@ -36,14 +58,19 @@ export const NavBarControls = () => {
         </Link>
       </div>
 
-      <SearchForm isInvisible={isFormInvisible} />
+      <SearchForm
+        isInvisible={isFormInvisible}
+        onSubmit={onSubmit}
+        onInput={onInput}
+        value={search}
+      />
     </div>
   );
 };
 
-const SearchForm = ({ isInvisible }) => {
-  const onInput = ({ target: { value } }) => {
-    console.log(value);
+const SearchForm = ({ isInvisible, onInput, onSubmit, value }) => {
+  const onChange = ({ target: { value } }) => {
+    onInput(value);
   };
 
   return (
@@ -52,8 +79,14 @@ const SearchForm = ({ isInvisible }) => {
       className={cn('header-controls-search-form', 'form-inline', {
         invisible: isInvisible,
       })}
+      onSubmit={onSubmit}
     >
-      <input className="form-control" placeholder="Поиск" onChange={onInput} />
+      <input
+        className="form-control"
+        placeholder="Поиск"
+        onChange={onChange}
+        value={value}
+      />
     </form>
   );
 };

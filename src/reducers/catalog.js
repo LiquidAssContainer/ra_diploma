@@ -4,11 +4,12 @@ import { getResponse } from '../lib/getResponse';
 const initialState = {
   products: [],
   categories: [],
+  searchString: '',
   activeCategory: 0,
   noMoreProducts: false,
+  showMoreLoading: false,
   loading: false,
   error: null,
-  showMoreLoading: false,
 };
 
 export const getCategoriesAsync = createAsyncThunk(
@@ -25,19 +26,37 @@ export const getCategoriesAsync = createAsyncThunk(
   },
 );
 
+export const getMoreProductsAsync = createAsyncThunk(
+  'catalog/fetchMoreProducts',
+  async (_, { getState, dispatch }) => {
+    const {
+      catalog: { products },
+    } = getState();
+
+    if (products.length) {
+      dispatch(getProductsAsync(products.length));
+    }
+  },
+);
+
 export const getProductsAsync = createAsyncThunk(
   'catalog/fetchCatalog',
-  async (_, { rejectWithValue, getState }) => {
+  async (offset, { rejectWithValue, getState, dispatch }) => {
     const {
-      catalog: { activeCategory, products },
+      catalog: { activeCategory, products, searchString: search },
     } = getState();
 
     const query = new URLSearchParams();
     if (activeCategory) {
       query.append('categoryId', activeCategory);
     }
-    if (products.length) {
+    if (offset) {
       query.append('offset', products.length);
+    } else {
+      dispatch(clearProducts());
+    }
+    if (search) {
+      query.append('q', search);
     }
     const queryString = query.toString();
 
@@ -62,9 +81,12 @@ export const catalogSlice = createSlice({
     changeActiveCategory: (state, { payload }) => {
       state.activeCategory = payload;
     },
+    changeSearchString: (state, { payload }) => {
+      state.searchString = payload;
+    },
     clearProducts: (state) => {
       state.products = [];
-      state.noMoreProducts = false
+      state.noMoreProducts = false;
     },
     getNextProducts: (state, { payload }) => {
       state.products = state.products.concat(payload);
@@ -83,7 +105,7 @@ export const catalogSlice = createSlice({
       // state.products = payload;
       state.products = state.products.concat(payload);
       if (payload.length < 6) {
-        state.noMoreProducts = true
+        state.noMoreProducts = true;
       }
       state.loading = false;
       state.error = null;
@@ -95,6 +117,11 @@ export const catalogSlice = createSlice({
   },
 });
 
-export const { changeActiveCategory, getNextProducts, clearProducts } = catalogSlice.actions;
+export const {
+  changeActiveCategory,
+  getNextProducts,
+  clearProducts,
+  changeSearchString,
+} = catalogSlice.actions;
 
 export const catalogReducer = catalogSlice.reducer;
