@@ -15,9 +15,11 @@ export const TopSales = () => {
   }, []);
 
   return (
-    <section className="top-sales">
-      <h2 className="text-center">Хиты продаж!</h2>
-      {loading ? <Preloader /> : <ProductList products={products} />}
-    </section>
+    (loading || products.length > 0) && (
+      <section className="top-sales">
+        <h2 className="text-center">Хиты продаж!</h2>
+        {loading ? <Preloader /> : <ProductList products={products} />}
+      </section>
+    )
   );
 };

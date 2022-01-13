@@ -47,16 +47,16 @@ export const getProductsAsync = createAsyncThunk(
     } = getState();
 
     const query = new URLSearchParams();
-    if (activeCategory) {
-      query.append('categoryId', activeCategory);
+    if (search) {
+      query.append('q', search);
     }
     if (offset) {
       query.append('offset', products.length);
     } else {
       dispatch(clearProducts());
     }
-    if (search) {
-      query.append('q', search);
+    if (activeCategory) {
+      query.append('categoryId', activeCategory);
     }
     const queryString = query.toString();
 

@@ -14,11 +14,13 @@ const ProductItem = ({ id, category, title, price, images }) => {
   return (
     <div className="col-4">
       <div className="card catalog-item-card">
-        <img
-          src={images[0]}
-          className="card-img-top img-fluid"
-          alt="Босоножки 'MYER'"
-        />
+        <div className="card-img-container">
+          <img
+            src={images[0]}
+            className="card-img-top img-fluid"
+            alt="Босоножки 'MYER'"
+          />
+        </div>
         <div className="card-body">
           <p className="card-text">{title}</p>
           <p className="card-text">{price} руб.</p>

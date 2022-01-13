@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { getResponse } from '../lib/getResponse';
 import { storage } from '../lib/storage';
+import { createPopup } from './popup';
 
 const cartStorage = storage('cart');
 const cartLocalData = cartStorage.get();
@@ -41,8 +42,8 @@ export const sendOrderAsync = createAsyncThunk(
         method: 'POST',
         data: formData,
       });
-      console.log('успешный успех отправки формы');
       dispatch(resetCart());
+      dispatch(createPopup({ text: 'Ваш заказ успешно оформлен' }));
     } catch (e) {
       console.log(e);
       return rejectWithValue(e.message);
@@ -107,8 +108,7 @@ export const cartSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    [sendOrderAsync.fulfilled]: (state, { payload }) => {
-      // state.product = payload;
+    [sendOrderAsync.fulfilled]: (state) => {
       state.loading = false;
       state.error = null;
     },

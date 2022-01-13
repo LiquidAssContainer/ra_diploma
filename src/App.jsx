@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import {
   HashRouter as Router,
   Redirect,
@@ -7,6 +8,7 @@ import {
 
 import { About } from './components/About';
 import { Banner } from './components/Banner';
+import { BottomPopup } from './components/BottomPopup';
 import { Cart } from './components/Cart';
 import { Catalog } from './components/Catalog';
 import { Contacts } from './components/Contacts';
@@ -17,6 +19,7 @@ import { NotFound } from './components/NotFound';
 import { ProductPage } from './components/ProductPage';
 
 export const App = () => {
+  const { isPopupShown, text, isError } = useSelector((state) => state.popup);
   return (
     <>
       <Header />
@@ -39,6 +42,7 @@ export const App = () => {
         </div>
       </main>
       <Footer />
+      {isPopupShown && <BottomPopup text={text} isError={isError} />}
     </>
   );
 };
