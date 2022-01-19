@@ -7,8 +7,8 @@ const initialState = {
   searchString: '',
   activeCategory: 0,
   noMoreProducts: false,
-  showMoreLoading: false,
   loading: false,
+  showMoreLoading: false,
   error: null,
 };
 
@@ -21,7 +21,7 @@ export const getCategoriesAsync = createAsyncThunk(
       });
       return data;
     } catch (e) {
-      return rejectWithValue(e.message);
+      return rejectWithValue('Не удалось загрузить категории товаров');
     }
   },
 );
@@ -68,7 +68,7 @@ export const getProductsAsync = createAsyncThunk(
       });
       return data;
     } catch (e) {
-      return rejectWithValue(e.message);
+      return rejectWithValue('Не удалось загрузить товары');
     }
   },
 );
@@ -84,7 +84,6 @@ export const catalogSlice = createSlice({
       state.searchString = payload;
     },
     clearProducts: (state) => {
-      console.log('CLEAR')
       state.products = [];
       state.noMoreProducts = false;
     },
@@ -95,24 +94,28 @@ export const catalogSlice = createSlice({
   extraReducers: {
     [getCategoriesAsync.fulfilled]: (state, { payload }) => {
       state.categories = [{ id: 0, title: 'Все' }].concat(payload);
-      state.areCategoriesLoaded = true;
     },
     [getProductsAsync.pending]: (state) => {
-      state.loading = true;
+      if (state.products) {
+        state.showMoreLoading = true;
+      } else {
+        state.loading = true;
+      }
       state.error = null;
     },
     [getProductsAsync.fulfilled]: (state, { payload }) => {
-      // state.products = payload;
       state.products = state.products.concat(payload);
       if (payload.length < 6) {
         state.noMoreProducts = true;
       }
       state.loading = false;
+      state.showMoreLoading = false;
       state.error = null;
     },
     [getProductsAsync.rejected]: (state, { payload }) => {
       state.error = payload;
       state.loading = false;
+      state.showMoreLoading = false;
     },
   },
 });

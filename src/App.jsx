@@ -17,28 +17,30 @@ export const App = () => {
   const { isPopupShown, text, isError } = useSelector((state) => state.popup);
   return (
     <>
-      <Header />
-      <main className="container">
-        <div className="row">
-          <div className="col">
-            <Banner />
-            <Router>
-              <Switch>
-                <Route path="/catalog/:id" component={ProductPage} />
-                <Route path="/catalog" component={Catalog} />
-                <Route path="/about" component={About} />
-                <Route path="/contacts" component={Contacts} />
-                <Route path="/cart" component={Cart} />
-                <Route exact path="/">
-                  <TopSales />
-                  <Catalog />
-                </Route>
-                <Route component={NotFound} />
-              </Switch>
-            </Router>
+      <div className="content">
+        <Header />
+        <main className="container">
+          <div className="row">
+            <div className="col">
+              <Banner />
+              <Router>
+                <Switch>
+                  <Route path="/catalog/:id" component={ProductPage} />
+                  <Route path="/catalog" component={Catalog} />
+                  <Route path="/about" component={About} />
+                  <Route path="/contacts" component={Contacts} />
+                  <Route path="/cart" component={Cart} />
+                  <Route exact path="/">
+                    <TopSales />
+                    <Catalog />
+                  </Route>
+                  <Route component={NotFound} />
+                </Switch>
+              </Router>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
       <Footer />
       {isPopupShown && <BottomPopup text={text} isError={isError} />}
     </>

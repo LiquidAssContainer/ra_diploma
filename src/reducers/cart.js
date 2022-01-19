@@ -12,8 +12,6 @@ const ownerLocalData = ownerStorage.get();
 
 const initialState = {
   cart: cartLocalData || [],
-  // totalSum: 0,
-  // totalQuantity: 0,
   owner: ownerLocalData || {
     phone: '',
     address: '',
@@ -45,8 +43,9 @@ export const sendOrderAsync = createAsyncThunk(
       dispatch(resetCart());
       dispatch(createPopup({ text: 'Ваш заказ успешно оформлен' }));
     } catch (e) {
-      console.log(e);
-      return rejectWithValue(e.message);
+      return rejectWithValue(
+        'К сожалению, что-то пошло не так, попробуйте ещё раз',
+      );
     }
   },
 );

@@ -11,11 +11,19 @@ import {
 import { ProductList } from '../ProductList';
 import { Preloader } from '../Preloader';
 import { CatalogCategories } from './CatalogCategories';
+import { useErrorPopup } from '../../hooks/useErrorPopup';
 
 export const Catalog = () => {
   const dispatch = useDispatch();
-  const { products, activeCategory, loading, noMoreProducts, searchString } =
-    useSelector((state) => state.catalog);
+  const {
+    products,
+    activeCategory,
+    noMoreProducts,
+    searchString,
+    loading,
+    showMoreLoading,
+    error,
+  } = useSelector((state) => state.catalog);
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
@@ -30,15 +38,16 @@ export const Catalog = () => {
     dispatch(getMoreProductsAsync());
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     dispatch(getProductsAsync());
   }, [activeCategory]);
+
+  useErrorPopup(error);
 
   return (
     <Router>
       <section className="catalog">
         <h2 className="text-center">Каталог</h2>
-
         <form
           className="catalog-search-form form-inline"
           onSubmit={onSearchSubmit}
@@ -53,14 +62,27 @@ export const Catalog = () => {
 
         <CatalogCategories />
 
-        {loading ? <Preloader /> : <ProductList products={products} />}
-
-        {noMoreProducts || (
-          <div className="text-center">
-            <button className="btn btn-outline-primary" onClick={onLoadMore}>
-              Загрузить ещё
-            </button>
-          </div>
+        {loading ? (
+          <Preloader />
+        ) : (
+          <>
+            <ProductList products={products} />
+            {showMoreLoading ? (
+              <Preloader />
+            ) : (
+              noMoreProducts ||
+              !!error || (
+                <div className="text-center">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={onLoadMore}
+                  >
+                    Загрузить ещё
+                  </button>
+                </div>
+              )
+            )}
+          </>
         )}
       </section>
     </Router>

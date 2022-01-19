@@ -50,7 +50,13 @@ export const ProductPage = ({
   return loading ? (
     <Preloader />
   ) : error ? (
-    <NotFound />
+    error === 404 ? (
+      <NotFound />
+    ) : (
+      <section className="catalog-item">
+        <div>Что-то пошло не так и ничего не загрузилось :(</div>
+      </section>
+    )
   ) : (
     <section className="catalog-item">
       <h2 className="text-center">{title}</h2>

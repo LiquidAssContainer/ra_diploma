@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { changeFieldValue, sendOrderAsync } from '../../reducers/cart';
+import { useErrorPopup } from '../../hooks/useErrorPopup';
 
 export const OrderForm = () => {
   const {
     cart,
     owner: { phone, address },
+    error,
   } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
@@ -14,6 +16,8 @@ export const OrderForm = () => {
       dispatch(sendOrderAsync());
     }
   };
+
+  useErrorPopup(error);
 
   return (
     <section className="order">

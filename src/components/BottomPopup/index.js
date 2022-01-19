@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import cn from 'classnames';
 
 import { destroyPopup } from '../../reducers/popup';
 
@@ -16,5 +17,5 @@ export const BottomPopup = ({ text, isError }) => {
     };
   }, []);
 
-  return <div className="bottom-popup">{text}</div>;
+  return <div className={cn('bottom-popup', { error: isError })}>{text}</div>;
 };
