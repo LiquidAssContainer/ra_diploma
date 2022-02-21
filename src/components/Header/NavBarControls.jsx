@@ -5,8 +5,8 @@ import cn from 'classnames';
 
 import {
   changeActiveCategory,
+  updateQueryParams,
   changeSearchString,
-  getProductsAsync,
 } from '../../reducers/catalog';
 
 export const NavBarControls = () => {
@@ -14,9 +14,9 @@ export const NavBarControls = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const { cart } = useSelector((state) => state.cart);
+  const { cartItems } = useSelector((state) => state.cart);
 
-  const totalQuantity = cart.reduce(
+  const totalQuantity = cartItems.reduce(
     (acc, product) => acc + product.quantity,
     0,
   );
@@ -24,23 +24,22 @@ export const NavBarControls = () => {
   const [isFormInvisible, setIsFormInvisible] = useState(true);
   const [search, setSearch] = useState('');
 
+  const onSubmit = (e) => {
+    e?.preventDefault();
+    if (location.pathname !== '/catalog') {
+      history.push('/catalog');
+    }
+    dispatch(changeSearchString(search));
+    dispatch(changeActiveCategory('all'));
+    setSearch('');
+    dispatch(updateQueryParams());
+  };
+
   const onSearchClick = () => {
     if (search) {
       onSubmit();
     } else {
       setIsFormInvisible(!isFormInvisible);
-    }
-  };
-
-  const onSubmit = (e) => {
-    e?.preventDefault();
-    dispatch(changeSearchString(search));
-    dispatch(changeActiveCategory(0));
-    setSearch('');
-    if (location.pathname === '/catalog') {
-      dispatch(getProductsAsync());
-    } else {
-      history.push('/catalog');
     }
   };
 

@@ -4,7 +4,7 @@ import { useErrorPopup } from '../../hooks/useErrorPopup';
 
 export const OrderForm = () => {
   const {
-    cart,
+    cartItems,
     owner: { phone, address },
     error,
   } = useSelector((state) => state.cart);
@@ -12,7 +12,7 @@ export const OrderForm = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (cart.length) {
+    if (cartItems.length) {
       dispatch(sendOrderAsync());
     }
   };

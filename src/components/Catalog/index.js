@@ -1,11 +1,18 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { HashRouter as Router } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
+import qs from 'qs';
 
 import {
   getProductsAsync,
   changeSearchString,
   getMoreProductsAsync,
+  changeActiveCategory,
+  updateQueryParams,
 } from '../../reducers/catalog';
 
 import { ProductList } from '../ProductList';
@@ -14,20 +21,23 @@ import { CatalogCategories } from './CatalogCategories';
 import { useErrorPopup } from '../../hooks/useErrorPopup';
 
 export const Catalog = () => {
+  const { search: query } = useLocation();
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const {
     products,
-    activeCategory,
     noMoreProducts,
     searchString,
     loading,
     showMoreLoading,
     error,
+    queryString,
   } = useSelector((state) => state.catalog);
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
-    dispatch(getProductsAsync());
+    dispatch(updateQueryParams());
   };
 
   const onSearchChange = ({ target: { value } }) => {
@@ -39,8 +49,30 @@ export const Catalog = () => {
   };
 
   useEffect(() => {
+    const { category, search } = qs.parse(query, { ignoreQueryPrefix: true });
+    if (category) {
+      dispatch(changeActiveCategory(Number(category)));
+    }
+    if (search) {
+      dispatch(changeSearchString(search));
+    }
+    dispatch(updateQueryParams());
+    return () => {
+      dispatch(changeActiveCategory('all'));
+      dispatch(changeSearchString(''));
+      dispatch(updateQueryParams());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (queryString === null) {
+      return;
+    }
+    history.push({
+      search: queryString,
+    });
     dispatch(getProductsAsync());
-  }, [activeCategory]);
+  }, [queryString]);
 
   useErrorPopup(error);
 
@@ -60,12 +92,12 @@ export const Catalog = () => {
           />
         </form>
 
-        <CatalogCategories />
-
         {loading ? (
           <Preloader />
         ) : (
           <>
+            <CatalogCategories />
+
             <ProductList products={products} />
             {showMoreLoading ? (
               <Preloader />

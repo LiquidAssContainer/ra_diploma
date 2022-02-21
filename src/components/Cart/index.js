@@ -17,8 +17,8 @@ const colTitles = [
 ];
 
 export const Cart = () => {
-  const { cart, loading } = useSelector((state) => state.cart);
-  const totalSum = cart.reduce((acc, product) => acc + product.sum, 0);
+  const { cartItems, loading } = useSelector((state) => state.cart);
+  const totalSum = cartItems.reduce((acc, product) => acc + product.sum, 0);
 
   return loading ? (
     <Preloader />
@@ -37,7 +37,7 @@ export const Cart = () => {
             </tr>
           </thead>
           <tbody>
-            {cart.map((product, index) => (
+            {cartItems.map((product, index) => (
               <CartProduct {...product} index={index} key={product.id} />
             ))}
             <tr>

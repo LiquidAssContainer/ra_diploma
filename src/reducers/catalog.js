@@ -1,15 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import qs from 'qs';
+
 import { getResponse } from '../lib/getResponse';
 
 const initialState = {
   products: [],
   categories: [],
   searchString: '',
-  activeCategory: 0,
+  activeCategory: 'all',
   noMoreProducts: false,
   loading: false,
   showMoreLoading: false,
   error: null,
+  queryString: null,
 };
 
 export const getCategoriesAsync = createAsyncThunk(
@@ -55,7 +58,7 @@ export const getProductsAsync = createAsyncThunk(
     } else {
       dispatch(clearProducts());
     }
-    if (activeCategory) {
+    if (activeCategory !== 'all') {
       query.append('categoryId', activeCategory);
     }
     const queryString = query.toString();
@@ -66,6 +69,10 @@ export const getProductsAsync = createAsyncThunk(
           queryString && `?${queryString}`
         }`,
       });
+      // костыль вместо нормальной отмены запроса
+      if (!offset) {
+        dispatch(clearProducts());
+      }
       return data;
     } catch (e) {
       return rejectWithValue('Не удалось загрузить товары');
@@ -83,6 +90,16 @@ export const catalogSlice = createSlice({
     changeSearchString: (state, { payload }) => {
       state.searchString = payload;
     },
+    updateQueryParams: (state) => {
+      const queryObj = {};
+      if (state.activeCategory !== 'all') {
+        queryObj.category = state.activeCategory;
+      }
+      if (state.searchString !== '') {
+        queryObj.search = state.searchString;
+      }
+      state.queryString = qs.stringify(queryObj, { addQueryPrefix: true });
+    },
     clearProducts: (state) => {
       state.products = [];
       state.noMoreProducts = false;
@@ -93,10 +110,10 @@ export const catalogSlice = createSlice({
   },
   extraReducers: {
     [getCategoriesAsync.fulfilled]: (state, { payload }) => {
-      state.categories = [{ id: 0, title: 'Все' }].concat(payload);
+      state.categories = [{ id: 'all', title: 'Все' }].concat(payload);
     },
     [getProductsAsync.pending]: (state) => {
-      if (state.products) {
+      if (state.products.length) {
         state.showMoreLoading = true;
       } else {
         state.loading = true;
@@ -125,6 +142,7 @@ export const {
   getNextProducts,
   clearProducts,
   changeSearchString,
+  updateQueryParams,
 } = catalogSlice.actions;
 
 export const catalogReducer = catalogSlice.reducer;

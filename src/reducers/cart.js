@@ -4,14 +4,14 @@ import { getResponse } from '../lib/getResponse';
 import { storage } from '../lib/storage';
 import { createPopup } from './popup';
 
-const cartStorage = storage('cart');
+const cartStorage = storage('cart-items');
 const cartLocalData = cartStorage.get();
 
-const ownerStorage = storage('owner');
+const ownerStorage = storage('cart-owner');
 const ownerLocalData = ownerStorage.get();
 
 const initialState = {
-  cart: cartLocalData || [],
+  cartItems: cartLocalData || [],
   owner: ownerLocalData || {
     phone: '',
     address: '',
@@ -25,9 +25,9 @@ export const sendOrderAsync = createAsyncThunk(
   'cart/fetchSendOrder',
   async (_, { rejectWithValue, getState, dispatch }) => {
     const {
-      cart: { owner, cart },
+      cart: { owner, cartItems },
     } = getState();
-    const items = cart.map(({ id, price, quantity }) => ({
+    const items = cartItems.map(({ id, price, quantity }) => ({
       id,
       price,
       count: quantity,
@@ -56,33 +56,33 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, { payload }) => {
       const { id, size, quantity, price, title } = payload;
-      const sameProductIndex = state.cart.findIndex(
+      const sameProductIndex = state.cartItems.findIndex(
         (product) => product.id === id && product.size === size,
       );
-      const sameProduct = state.cart[sameProductIndex];
+      const sameProduct = state.cartItems[sameProductIndex];
 
       if (sameProductIndex !== -1) {
         sameProduct.quantity += quantity;
         sameProduct.sum = sameProduct.quantity * price;
-        state.cart[sameProductIndex] = sameProduct;
+        state.cartItems[sameProductIndex] = sameProduct;
       } else {
-        state.cart = [
-          ...state.cart,
+        state.cartItems = [
+          ...state.cartItems,
           { id, size, quantity, price, title, sum: quantity * price },
         ];
       }
 
-      cartStorage.set(state.cart);
+      cartStorage.set(state.cartItems);
     },
 
     removeFromCart: (state, { payload }) => {
       const { id, size } = payload;
-      const productIndex = state.cart.findIndex(
+      const productIndex = state.cartItems.findIndex(
         (product) => product.id === id && product.size === size,
       );
-      state.cart.splice(productIndex, 1);
+      state.cartItems.splice(productIndex, 1);
 
-      cartStorage.set(state.cart);
+      cartStorage.set(state.cartItems);
     },
 
     changeFieldValue: (state, { payload }) => {
@@ -94,7 +94,7 @@ export const cartSlice = createSlice({
     resetCart: (state) => {
       cartStorage.remove();
       ownerStorage.remove();
-      state.cart = [];
+      state.cartItems = [];
       state.owner = {
         phone: '',
         address: '',

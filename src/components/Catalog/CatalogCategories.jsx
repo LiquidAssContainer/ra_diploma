@@ -4,6 +4,7 @@ import cn from 'classnames';
 
 import {
   changeActiveCategory,
+  updateQueryParams,
   getCategoriesAsync,
 } from '../../reducers/catalog';
 
@@ -30,6 +31,7 @@ const CatalogNavItem = ({ label, category }) => {
 
   const onClick = () => {
     dispatch(changeActiveCategory(category));
+    dispatch(updateQueryParams());
   };
 
   return (
